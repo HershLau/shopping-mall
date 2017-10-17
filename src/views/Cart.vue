@@ -216,6 +216,46 @@
             this.init()
           }
         })
+      },
+      editCart(flag, item) {
+        if (flag === 'add') {
+          item.productNum++
+        } else if (flag === 'minus') {
+          if (item.productNum <= 1) {
+            return
+          }
+          item.productNum--
+        } else {
+          item.checked = item.checked === '1' ? '0' : '1'
+        }
+        axios.post('/users/cartEdit', {
+          productId: item.productId,
+          productNum: item.productNum,
+          checked: item.checked
+        }).then((response) => {
+//          let res = response.data
+        })
+      },
+      toggleCheckAll() {
+        var flag = !this.checkAllFlag
+        this.cartList.forEach((item) => {
+          item.checked = flag ? '1' : '0'
+        })
+        axios.post('/users/editCheckAll', {
+          checkAll: flag
+        }).then((response) => {
+          let res = response.data
+          if (res.status === '0') {
+            console.log('update suc')
+          }
+        })
+      },
+      checkOut() {
+        if (this.checkedCount > 0) {
+          this.$router.push({
+            path: '/address'
+          })
+        }
       }
     }
   }
